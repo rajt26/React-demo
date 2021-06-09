@@ -3,48 +3,21 @@ import api from "../../api";
 import "../../demo.css";
 
 const Showdata = (props) => {
-  console.log('props.....',props);
-  const [userData, setUserData] = useState([]);
-  const getUserData = async () => {
-    try {
-      const res = await fetch("http://localhost:4000/find", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      setUserData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   const deleteUserData = async (id) => {
     try {
       const payload = {
         id: id,
       };
-      api.deleteData(payload);
-      setUserData(userData.filter((item) => item._id !== id));
+      await api.deleteData(payload);
+      props.refresh()
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const updateData = (data) =>{
-  //   const payload = {
-  //     id:data.id,
-  //     data:data
-  //   }
-  // }
-
   return (
-    <table style={{ width: "70%" }}>
+    <table style={{ width: "50%" }}>
       <tr>
         <th>email</th>
         <th>name</th>
@@ -52,7 +25,7 @@ const Showdata = (props) => {
       </tr>
       <tbody>
         {
-        userData.map((item) => (
+        props.list.map((item) => (
           <tr key={item._id}>
             <td>{item.email}</td>
             <td>{item.name}</td>

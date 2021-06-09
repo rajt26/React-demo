@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,setState } from "react";
 import api from "../../api";
 
-const Register = ({ editItem }) => {
-    useEffect(() => {
+const Register = ({ editItem, refresh , clear}) => {
+  useEffect(() => {
     setName(editItem?.name);
     setEmail(editItem?.email)
-    }, [editItem]);
+  }, [editItem]);
 
   const [name, setName] = useState(editItem?.name || "");
   const [email, setEmail] = useState(editItem?.email || "");
   const [password, setPassword] = useState(editItem?.password || "");
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setName(name);
     setEmail(email);
     setPassword(password);
-
-
 
     if(editItem != null){
       let updatePayload = {
@@ -25,7 +23,7 @@ const Register = ({ editItem }) => {
         name,
         email
       }
-      api.updateData(updatePayload)
+      await api.updateData(updatePayload)
     }
     else{
       let payload = {
@@ -33,14 +31,16 @@ const Register = ({ editItem }) => {
         email,
         password,
       };
-      api.registerData(payload);
+      await api.registerData(payload);
     }
+    refresh();
   };
-
   const clearData = () => {
+    // editItem = null
     setName(null)
     setEmail(null)
     setPassword(null)
+    clear()
   }
 
   return (
