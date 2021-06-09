@@ -1,32 +1,47 @@
 import React, { useEffect, useState } from "react";
-// import {useForm} from 'react-hook-form'
 import api from "../../api";
 
 const Register = ({ editItem }) => {
-    console.log('11111111111',editItem)
     useEffect(() => {
     setName(editItem?.name);
-    console.log("effec ..");
-  }, [editItem]);
+    setEmail(editItem?.email)
+    }, [editItem]);
 
   const [name, setName] = useState(editItem?.name || "");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(editItem?.email || "");
+  const [password, setPassword] = useState(editItem?.password || "");
 
-  console.log('name----',name);
   const onSubmit = (event) => {
-    // event.preventDefault();
+    event.preventDefault();
     setName(name);
     setEmail(email);
     setPassword(password);
 
-    let payload = {
-      name,
-      email,
-      password,
-    };
-    api.registerData(payload);
+
+
+    if(editItem != null){
+      let updatePayload = {
+        id:editItem._id,
+        name,
+        email
+      }
+      api.updateData(updatePayload)
+    }
+    else{
+      let payload = {
+        name,
+        email,
+        password,
+      };
+      api.registerData(payload);
+    }
   };
+
+  const clearData = () => {
+    setName(null)
+    setEmail(null)
+    setPassword(null)
+  }
 
   return (
     <>
@@ -36,6 +51,7 @@ const Register = ({ editItem }) => {
           <input
             type="text"
             name="name"
+            value={name}
             placeholder="Enter Full Name..."
             onChange={(e) => setName(e.target.value)}
           ></input>
@@ -43,6 +59,7 @@ const Register = ({ editItem }) => {
           <input
             type="email"
             name="email"
+            value={email}
             placeholder="Enter Email..."
             onChange={(e) => {
               setEmail(e.target.value);
@@ -52,13 +69,15 @@ const Register = ({ editItem }) => {
           <input
             type="text"
             name="password"
+            value={password}
             placeholder="Enter password..."
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           ></input>
           <br />
-          <input type="submit" value="Submit"></input>
+          <input type="submit" value={editItem ? "Update": "Submit"}/>
+          <input type="reset" value={"Clear"} onClick={clearData}/>
         </form>
       </div>
     </>

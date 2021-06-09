@@ -24,8 +24,8 @@ const deleteData = (data) => fetch("http://localhost:4000/delete",{
     body:JSON.stringify(data)
 })
 
-const updateData = (data) => fetch("http://localhost:4000/delete",{
-    method:"POST",
+const updateData = (data) => fetch("http://localhost:4000/update",{
+    method:"PUT",
     headers:{
         "Accept":"application/json",
         "Content-Type":"application/json"

@@ -44,7 +44,7 @@ const Showdata = (props) => {
   // }
 
   return (
-    <table style={{ width: "50%" }}>
+    <table style={{ width: "70%" }}>
       <tr>
         <th>email</th>
         <th>name</th>
