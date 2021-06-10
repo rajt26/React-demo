@@ -7,13 +7,13 @@ const registerData = (data) => fetch("http://localhost:4000/create",{
     body:JSON.stringify(data)
 })
 
-const getData = () =>  fetch("http://localhost:4000/find",{
-    method:"GET",
-    headers:{
-        "Accept":"application/json",
-        "Content-Type":"application/json"
-    }
-})
+// const getData = () =>  fetch("http://localhost:4000/find",{
+//     method:"GET",
+//     headers:{
+//         "Accept":"application/json",
+//         "Content-Type":"application/json"
+//     }
+// })
 
 const deleteData = (data) => fetch("http://localhost:4000/delete",{
     method:"POST",
@@ -36,7 +36,7 @@ const updateData = (data) => fetch("http://localhost:4000/update",{
 
 export default {
     registerData,
-    getData,
+    // getData,
     deleteData,
     updateData
 }

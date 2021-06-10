@@ -33,7 +33,7 @@ function App() {
   };
   useEffect(() => {
     getUserData();
-  }, []);
+  },[]);
 
 
   return (
@@ -41,7 +41,7 @@ function App() {
     <Register editItem={editItem} clear={()=>setEditItem(null)} refresh={getUserData} />
     {
       loading ? <p>Loading .....:)</p>:<Showdata list={list} onEdit={onEdit} refresh={getUserData}/>
-      }
+    }
     </>
   );
   }

@@ -1,85 +1,131 @@
-import React, { useEffect, useState,setState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api";
+import validator from 'validator'
 
-const Register = ({ editItem, refresh , clear}) => {
+const Register = ({ editItem, refresh, clear }) => {
   useEffect(() => {
     setName(editItem?.name);
-    setEmail(editItem?.email)
+    setEmail(editItem?.email);
   }, [editItem]);
 
   const [name, setName] = useState(editItem?.name || "");
   const [email, setEmail] = useState(editItem?.email || "");
   const [password, setPassword] = useState(editItem?.password || "");
+  const [errorMessage, setErrorMessage] = useState('')
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (validator.isStrongPassword(password, {
+      minLength: 8, minLowercase: 1,
+      minUppercase: 1, minNumbers: 1, minSymbols: 1
+    })) {
+      setErrorMessage('')
+    }
+    else {
+      setErrorMessage('The password must contain at least 1 lowercase,1 uppercase, 1 number,1 special character')
+      document.getElementById('errorMessage').innerHTML = 'The password must contain at least 1 lowercase,1 uppercase, 1 number,1 special character'
+      setTimeout(() => {
+        document.getElementById("errorMessage").innerHTML = ""
+      }, 2000);
+    }
+
     setName(name);
     setEmail(email);
-    setPassword(password);
+    setTimeout(() => {
+      setPassword(password);
+    }, 2000);
 
-    if(editItem != null){
+    if (editItem != null) {
       let updatePayload = {
-        id:editItem._id,
+        id: editItem._id,
         name,
-        email
+        email,
+      };
+      let result = await api.updateData(updatePayload);
+      if (result && result.ok) {
+        document.getElementById("message").innerHTML =
+          "Data Updated Successfully...";
+        setTimeout(() => {
+          document.getElementById("message").innerHTML = ""
+        }, 2000);
+
+      } else {
+        document.getElementById("message").innerHTML =
+          "Error while data update!!!";
+        setTimeout(() => {
+          document.getElementById("message").innerHTML = ""
+        }, 2000);
       }
-      await api.updateData(updatePayload)
-    }
-    else{
+    } else {
       let payload = {
         name,
         email,
         password,
       };
-      await api.registerData(payload);
+      let registerData = await api.registerData(payload);
+      if (registerData && registerData.ok) {
+        document.getElementById("message").innerHTML =
+          "User Register Successfully.";
+        setTimeout(() => {
+          document.getElementById("message").innerHTML = ""
+        }, 2000);
+      } else {
+        document.getElementById("message").innerHTML =
+          "Error while register!!!";
+        setTimeout(() => {
+          document.getElementById("message").innerHTML = ""
+        }, 2000);
+      }
     }
     refresh();
   };
   const clearData = () => {
-    // editItem = null
-    setName(null)
-    setEmail(null)
-    setPassword(null)
-    clear()
-  }
+    setName(null);
+    setEmail(null);
+    setPassword(null);
+    clear();
+  };
 
   return (
     <>
-      <div>
-        <form onSubmit={onSubmit}>
-          <h1> Registration </h1>
-          <input
-            type="text"
-            name="name"
-            value={name}
-            placeholder="Enter Full Name..."
-            onChange={(e) => setName(e.target.value)}
-          ></input>
-          <br />
-          <input
-            type="email"
-            name="email"
-            value={email}
-            placeholder="Enter Email..."
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          ></input>
-          <br />
-          <input
-            type="text"
-            name="password"
-            value={password}
-            placeholder="Enter password..."
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          ></input>
-          <br />
-          <input type="submit" value={editItem ? "Update": "Submit"}/>
-          <input type="reset" value={"Clear"} onClick={clearData}/>
-        </form>
-      </div>
+      <form onSubmit={onSubmit}>
+        <h1> Registration </h1>
+        <input
+          type="text"
+          name="name"
+          value={name}
+          required
+          placeholder="Enter Full Name..."
+          onChange={(e) => setName(e.target.value)}
+        ></input>
+        <br />
+        <input
+          type="email"
+          name="email"
+          value={email}
+          required
+          placeholder="Enter Email..."
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        ></input>
+        <br />
+        <input
+          type="password"
+          name="password"
+          value={password}
+          required
+          placeholder="Enter password..."
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+        ></input>
+        <br />
+        <p id='errorMessage' style={{ color: 'red' }}></p>
+        <p id="message" style={{ color: 'red' }}></p>
+        <input type="submit" value={editItem ? "Update" : "Submit"} />
+        <input type="reset" value={"Clear"} onClick={clearData} />
+      </form>
     </>
   );
 };
