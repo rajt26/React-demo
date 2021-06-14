@@ -1,10 +1,21 @@
 import './App.css';
 import Register from'./components/Register/Register'
 import Showdata from './components/ShowData/ShowData';
+import Mobx from './components/MobX/Mobx'
 import { useState, useEffect } from 'react';
+import UserStore from './UserStore'
 
-function App() {
+// import "bootstrap/dist/css/bootstrap.css";
 
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+
+const App = () => {
+
+  const store =new UserStore()
   const [ editItem ,setEditItem] = useState(null);
   const [ list ,setList] = useState([]);
   const [ loading ,setLoading] = useState(true);
@@ -35,13 +46,19 @@ function App() {
     getUserData();
   },[]);
 
-
   return (
     <>
-    <Register editItem={editItem} clear={()=>setEditItem(null)} refresh={getUserData} />
-    {
-      loading ? <p>Loading .....:)</p>:<Showdata list={list} onEdit={onEdit} refresh={getUserData}/>
-    }
+    <Router>
+    <Switch>
+    <Route exact path="/">
+    <Register editItem={editItem} clear={()=>setEditItem(null)}  />
+    {loading ? <p>Loading .....:)</p>:<Showdata list={list} onEdit={onEdit}  />}
+   </Route>
+    <Route path="/mobx">
+    <Mobx store={store}/>
+    </Route>
+    </Switch>
+    </Router>
     </>
   );
   }

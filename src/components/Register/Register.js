@@ -16,7 +16,7 @@ const Register = ({ editItem, refresh, clear }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     if (validator.isStrongPassword(password, {
-      minLength: 8, minLowercase: 1,
+      minLength: 6, minLowercase: 1,
       minUppercase: 1, minNumbers: 1, minSymbols: 1
     })) {
       setErrorMessage('')
@@ -31,11 +31,10 @@ const Register = ({ editItem, refresh, clear }) => {
 
     setName(name);
     setEmail(email);
-    setTimeout(() => {
-      setPassword(password);
-    }, 2000);
+    setPassword(password);
 
     if (editItem != null) {
+      document.getElementById("errorMessage").innerHTML = ""
       let updatePayload = {
         id: editItem._id,
         name,
@@ -114,7 +113,6 @@ const Register = ({ editItem, refresh, clear }) => {
           type="password"
           name="password"
           value={password}
-          required
           placeholder="Enter password..."
           onChange={(e) => {
             setPassword(e.target.value);
