@@ -3,15 +3,17 @@ import Register from "./components/Register/Register";
 import Showdata from "./components/ShowData/ShowData";
 import Mobx from "./components/MobX/Mobx";
 import { useState, useEffect } from "react";
-import UserStore from "./UserStore";
+import UserStore from "./components/MobX/UserStore";
+import Redux from "./components/Redux/Redux";
+import { Provider } from "react-redux";
+import store from "./store";
 
 // import "bootstrap/dist/css/bootstrap.css";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const App = () => {
-  const store = new UserStore();
-  console.log("store", store);
+  const userStore = new UserStore();
   const [editItem, setEditItem] = useState(null);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,12 @@ const App = () => {
             )}
           </Route>
           <Route path="/mobx">
-            <Mobx store={store} />
+            <Mobx store={userStore} />
+          </Route>
+          <Route path="/redux">
+            <Provider store={store}>
+              <Redux />
+            </Provider>
           </Route>
         </Switch>
       </Router>
